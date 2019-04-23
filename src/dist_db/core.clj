@@ -37,7 +37,7 @@
 
 (s/def
   ::make-db-args-1
-  #(not (path-exists? %)))
+  (comp not path-exists?))
 
 (s/def
   ::make-db-args-2
@@ -51,7 +51,7 @@
 	(s/keys :req [::db-path ::db-name]))
 
 (s/fdef make-db
-  :args ::make-db-args
+  :args (s/alt ::make-dp-args-1 ::make-db-args-2)
   :ret ::make-db-ret)
 
 (defn s-valid-or-throw [spec & args]
@@ -73,3 +73,8 @@
    (s-valid-or-throw ::make-db-args-2 [path db-name])
    {:db-path path
     :db-name db-name}))
+
+#(
+  (s/valid? ::make-db-args-1 "/aaaa")
+  (s/valid? ::make-db-args-1 "/home")
+  )
